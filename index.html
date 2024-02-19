@@ -1,1 +1,111 @@
-Hello World 3
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Tic Tac Toe</title>
+    <style>
+        * {
+            font-family: Arial;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            width: 260px; /* Adjusted width (80px * 3 + 10px * 2) */
+            margin: auto;
+        }
+
+        .grid-item {
+            display: grid;
+            width: 80px;
+            height: 80px;
+            justify-content: center;
+            align-items: center;
+            background-color: #F0F0F0;
+            cursor: pointer;
+            font-size: 36px; /* Larger font for X and O */
+            font-weight: bold; /* Make X and O bold */
+            user-select: none; /* Prevent text selection */
+        }
+
+        header, footer {
+            background-color: #666666;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px;
+        }
+
+        main {
+            padding: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Tic Tac Toe</h1>
+</header>
+
+<main>
+    <div class="grid-container" id="grid-container"></div>
+</main>
+
+<footer>
+    <b>by siumai.app</b>
+</footer>
+
+<script>
+    let currentPlayer = 'X';
+    const gameState = Array(9).fill(null); // Track the state of the game
+
+    function initializeGrid(size) {
+        const gridContainer = document.getElementById('grid-container');
+        for (let i = 0; i < size * size; i++) {
+            const gridItem = document.createElement('div');
+            gridItem.className = 'grid-item';
+            gridItem.setAttribute('data-index', i.toString());
+            gridItem.addEventListener('click', toggleGridSelection);
+            gridContainer.appendChild(gridItem);
+        }
+    }
+
+    function toggleGridSelection(event) {
+        const grid = event.target;
+        if (grid.textContent === '' && !checkWinner()) {
+            grid.textContent = currentPlayer; // Set 'X' or 'O'
+            const index = parseInt(grid.getAttribute('data-index'), 10);
+            gameState[index] = currentPlayer; // Update game state
+            if (checkWinner()) {
+                setTimeout(() => alert(currentPlayer + ' wins!'), 10); // Delay alert for better UI experience
+            } else if (!gameState.includes(null)) {
+                setTimeout(() => alert('Draw!'), 10);
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch player
+            }
+        }
+    }
+
+    function checkWinner() {
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+        for (const combination of winningCombinations) {
+            const [a, b, c] = combination;
+            if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Initialize the 3x3 grid for Tic Tac Toe
+    initializeGrid(3);
+</script>
+
+</body>
+</html>
